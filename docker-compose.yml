@@ -40,8 +40,8 @@ services:
     image: gcr.io/datadoghq/agent:latest
     container_name: datadog
     environment:
-      - DD_API_KEY=<YOUR_DATADOG_API_KEY>
-      - DD_SITE=datadoghq.com
+      - DD_API_KEY=432cec3f515865da7dc443931cb00633
+      - DD_SITE=us5.datadoghq.com
       - DD_LOGS_ENABLED=true
       - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
     volumes:
