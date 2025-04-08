@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: note-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/notes
+      - DD_AGENT_HOST=datadog
+      - DD_ENV=dev
+      - DD_SERVICE=note-backend
+      - DD_VERSION=1.0
+    depends_on:
+      - db
+      - datadog
+    logging:
+      driver: "json-file"
+
+  frontend:
+    build: ./frontend
+    container_name: note-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:14
+    container_name: note-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notes
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  datadog:
+    image: gcr.io/datadoghq/agent:latest
+    container_name: datadog
+    environment:
+      - DD_API_KEY=<YOUR_DATADOG_API_KEY>
+      - DD_SITE=datadoghq.com
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  postgres_data:
